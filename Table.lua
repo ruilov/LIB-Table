@@ -56,3 +56,55 @@ function Table.size(tab)
     for k,v in pairs(tab) do n = n + 1 end
     return n
 end
+
+-- optional arguments for secondary keys
+-- the keys must be numerical values for now
+-- you can use the format -key for descending order
+function Table.sort(tab,key, ...)
+    local keys = arg or {}
+    table.insert(keys,1,key)
+    
+    local sortF = function(x,y)
+        if x==nil then return true end
+        if y==nil then return false end
+        
+        for _,key in ipairs(keys) do
+            local realkey = key
+            local order = 1
+            if key:sub(1,1) == "-" then
+                realkey = key:sub(2,key:len())
+                order = -1
+            end
+            local xv = x[realkey]
+            local yv = y[realkey]
+            
+            assert(xv~=nil and yv~=nil,"sorting table on nil value for "..key)
+            
+            local v = (yv - xv)*order
+            if v > 0  then return true
+            elseif v < 0 then return false end
+        end
+        return true
+    end
+    
+    table.sort(tab,sortF)
+end
+
+function Table.sub(tab,s,e)
+    e = e or #tab
+    local ret = {}
+    s = math.max(s,1)
+    e = math.min(e,#tab)
+    for i = s,e do 
+        table.insert(ret,tab[i])
+    end
+    return ret
+end
+
+function Table.insertAll(tab,toInsert)
+    for _,elem in ipairs(toInsert) do
+        table.insert(tab,elem)
+    end
+end
+
+
