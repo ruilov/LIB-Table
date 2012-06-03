@@ -75,16 +75,23 @@ function Table.sort(tab,key, ...)
                 realkey = key:sub(2,key:len())
                 order = -1
             end
+            
             local xv = x[realkey]
             local yv = y[realkey]
             
             assert(xv~=nil and yv~=nil,"sorting table on nil value for "..key)
             
-            local v = (yv - xv)*order
+            local v
+            if xv < yv then v = 1
+            elseif xv > yv then v = -1
+            else v = 0 end
+
+            v = v * order
             if v > 0  then return true
             elseif v < 0 then return false end
         end
-        return true
+        
+        return false
     end
     
     table.sort(tab,sortF)
@@ -101,7 +108,7 @@ function Table.sub(tab,s,e)
     return ret
 end
 
-function Table.insertAll(tab,toInsert)
+function Table.appendAll(tab,toInsert)
     for _,elem in ipairs(toInsert) do
         table.insert(tab,elem)
     end
